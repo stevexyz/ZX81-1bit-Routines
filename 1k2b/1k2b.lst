@@ -1,0 +1,541 @@
+		ORG 4009
+4009:00		DEFB of 1 bytes
+400A:0000	DEFW of 1 words
+400C:A743	DEFW of 1 words
+400E:A843	DEFW of 1 words
+4010:C043	DEFW of 1 words
+4012:0000	DEFW of 1 words
+4014:C143	DEFW of 1 words
+4016:C043	DEFW of 1 words
+4018:0000	DEFW of 1 words
+401A:C143	DEFW of 1 words
+401C:C143	DEFW of 1 words
+401E:00		DEFB of 1 bytes
+401F:5D40	DEFW of 1 words
+4021:00		DEFB of 1 bytes
+4022:02		DEFB of 1 bytes
+4023:0100	DEFW of 1 words
+4025:FFFFFF	DEFB of 3 bytes
+4028:37		DEFB of 1 bytes
+4029:9643	DEFW of 1 words
+402B:0000	DEFW of 1 words
+402D:00		DEFB of 1 bytes
+402E:0000	DEFW of 1 words
+4030:8D0C	DEFW of 1 words
+4032:0000	DEFW of 1 words
+4034:FFFF	DEFW of 1 words
+4036:0000	DEFB of 2 bytes
+4038:BC		DEFB of 1 bytes
+4039:2118	DEFB of 2 bytes
+403B:40		DEFB of 1 bytes
+membot		EQU 405D
+403C:		label playnote
+switch1		EQU 403D
+403C:ED79	OUT (C), A
+base1		EQU 403F
+403E:210000	LD HL, 0000
+4041:19		ADD HL, DE
+4042:EB		EX DE, HL
+4043:3009	JR NC, 404E
+4045:213D40	LD HL, 403D
+4048:7E		LD A, (HL)
+4049:A8		XOR B
+404A:77		LD (HL), A
+404B:79		LD A, C
+404C:A8		XOR B
+404D:4F		LD C, A
+404E:		label skip1
+404E:D9		EXX
+switch2		EQU 4050
+404F:ED79	OUT (C), A
+base2		EQU 4052
+4051:210000	LD HL, 0000
+4054:39		ADD HL, SP
+4055:F9		LD SP, HL
+4056:3009	JR NC, 4061
+4058:08		EX AF, AF'
+4059:A8		XOR B
+405A:325040	LD (4050), A
+405D:08		EX AF, AF'
+405E:79		LD A, C
+405F:A8		XOR B
+4060:4F		LD C, A
+4061:		label skip2
+4061:1B		DEC DE
+4062:7A		LD A, D
+4063:B3		OR E
+4064:D9		EXX
+4065:20D5	JR NZ, 403C
+oldSP		EQU 4068
+4067:310000	LD SP, 0000
+406A:1839	JR 40A5
+406C:		label reinit
+406C:212C41	LD HL, 412C
+406F:E5		PUSH HL
+4070:		label selectptn
+4070:E1		POP HL
+4071:5E		LD E, (HL)
+4072:23		INC HL
+4073:56		LD D, (HL)
+4074:23		INC HL
+4075:7A		LD A, D
+4076:B3		OR E
+4077:28F3	JR Z, 406C
+4079:E5		PUSH HL
+407A:D5		PUSH DE
+407B:1828	JR 40A5
+407D:		label line0
+407D:0000	DEFB of 2 bytes
+407F:1503	DEFW of 1 words
+4081:EA		DEFB of 1 bytes
+4082:		label init
+4082:F3		DI
+4083:D3FD	OUT (FD), A
+4085:		label unpackNT
+4085:217E43	LD HL, 437E
+4088:119643	LD DE, 4396
+408B:0E03	LD C, 03
+408D:		label dividelp0
+408D:060C	LD B, 0C
+408F:		label dividelp
+408F:B7		OR A
+4090:7E		LD A, (HL)
+4091:17		RLA
+4092:12		LD (DE), A
+4093:2C		INC L
+4094:1C		INC E
+4095:7E		LD A, (HL)
+4096:17		RLA
+4097:12		LD (DE), A
+4098:2C		INC L
+4099:1C		INC E
+409A:10F3	DJNZ 408F
+409C:0D		DEC C
+409D:20EE	JR NZ, 408D
+409F:AF		XOR A
+40A0:12		LD (DE), A
+40A1:1C		INC E
+40A2:12		LD (DE), A
+40A3:18C7	JR 406C
+40A5:		label rdnotes
+40A5:D1		POP DE
+40A6:1A		LD A, (DE)
+40A7:B7		OR A
+40A8:28C6	JR Z, 4070
+40AA:217C43	LD HL, 437C
+40AD:17		RLA
+40AE:D9		EXX
+40AF:11000C	LD DE, 0C00
+40B2:3002	JR NC, 40B6
+40B4:CB22	SLA D
+40B6:		label rdskip1
+40B6:D9		EXX
+40B7:85		ADD A, L
+40B8:6F		LD L, A
+40B9:7E		LD A, (HL)
+40BA:323F40	LD (403F), A
+40BD:2C		INC L
+40BE:7E		LD A, (HL)
+40BF:324040	LD (4040), A
+40C2:13		INC DE
+40C3:1A		LD A, (DE)
+40C4:17		RLA
+40C5:DCF040	CALL C, 40F0
+40C8:2E7C	LD L, 7C
+40CA:85		ADD A, L
+40CB:6F		LD L, A
+40CC:7E		LD A, (HL)
+40CD:325240	LD (4052), A
+40D0:2C		INC L
+40D1:7E		LD A, (HL)
+40D2:325340	LD (4053), A
+40D5:13		INC DE
+40D6:D5		PUSH DE
+40D7:ED736840	LD (4068), SP
+40DB:3E79	LD A, 79
+40DD:323D40	LD (403D), A
+40E0:325040	LD (4050), A
+40E3:01FF01	LD BC, 01FF
+40E6:C5		PUSH BC
+40E7:D9		EXX
+40E8:C1		POP BC
+40E9:D9		EXX
+40EA:3E79	LD A, 79
+40EC:08		EX AF, AF'
+40ED:C33C40	JP 403C
+40F0:		label drum
+40F0:D9		EXX
+40F1:CB7F	BIT 7, A
+40F3:201E	JR NZ, 4113
+40F5:08		EX AF, AF'
+40F6:210000	LD HL, 0000
+40F9:018003	LD BC, 0380
+40FC:		label drlp1
+40FC:7E		LD A, (HL)
+40FD:23		INC HL
+40FE:1F		RRA
+40FF:D3FF	OUT (FF), A
+4101:3002	JR NC, 4105
+4103:DBFE	IN A, (FE)
+4105:		label drskip1
+4105:0B		DEC BC
+4106:78		LD A, B
+4107:B1		OR C
+4108:20F2	JR NZ, 40FC
+410A:		label drumret
+410A:15		DEC D
+410B:15		DEC D
+410C:1E80	LD E, 80
+410E:D9		EXX
+410F:08		EX AF, AF'
+4110:E67F	AND 7F
+4112:C9		RET
+4113:		label drum2
+4113:08		EX AF, AF'
+4114:0601	LD B, 01
+4116:		label drlp2
+4116:78		LD A, B
+4117:		label drwlp2
+4117:D3FF	OUT (FF), A
+4119:E5		PUSH HL
+411A:E1		POP HL
+411B:3D		DEC A
+411C:20F9	JR NZ, 4117
+411E:48		LD C, B
+411F:		label drwlp3
+411F:DBFE	IN A, (FE)
+4121:E5		PUSH HL
+4122:E1		POP HL
+4123:0D		DEC C
+4124:20F9	JR NZ, 411F
+4126:CB30	SLL B
+4128:30EC	JR NC, 4116
+412A:18DE	JR 410A
+412C:		label musicdata
+		INCLUDE music.asm
+speed		EQU 0C00
+412C:		label seq
+412C:5E41	DEFW of 1 words
+412E:5E41	DEFW of 1 words
+4130:7F41	DEFW of 1 words
+4132:A041	DEFW of 1 words
+4134:7F41	DEFW of 1 words
+4136:C141	DEFW of 1 words
+4138:E241	DEFW of 1 words
+413A:0342	DEFW of 1 words
+413C:E241	DEFW of 1 words
+413E:2442	DEFW of 1 words
+4140:3D42	DEFW of 1 words
+4142:3D42	DEFW of 1 words
+4144:5E42	DEFW of 1 words
+4146:0343	DEFW of 1 words
+4148:7F42	DEFW of 1 words
+414A:A042	DEFW of 1 words
+414C:C142	DEFW of 1 words
+414E:0343	DEFW of 1 words
+4150:7F42	DEFW of 1 words
+4152:A042	DEFW of 1 words
+4154:C142	DEFW of 1 words
+4156:E242	DEFW of 1 words
+4158:2443	DEFW of 1 words
+415A:2443	DEFW of 1 words
+415C:0000	DEFW of 1 words
+415E:		label ptn0
+415E:0531	DEFB of 2 bytes
+4160:0531	DEFB of 2 bytes
+4162:1131	DEFB of 2 bytes
+4164:1431	DEFB of 2 bytes
+4166:3131	DEFB of 2 bytes
+4168:3131	DEFB of 2 bytes
+416A:0F31	DEFB of 2 bytes
+416C:0F31	DEFB of 2 bytes
+416E:0531	DEFB of 2 bytes
+4170:0531	DEFB of 2 bytes
+4172:1131	DEFB of 2 bytes
+4174:1431	DEFB of 2 bytes
+4176:3131	DEFB of 2 bytes
+4178:3131	DEFB of 2 bytes
+417A:0F31	DEFB of 2 bytes
+417C:0F31	DEFB of 2 bytes
+417E:00		DEFB of 1 bytes
+417F:		label ptn1
+417F:05E4	DEFB of 2 bytes
+4181:0522	DEFB of 2 bytes
+4183:1120	DEFB of 2 bytes
+4185:14DF	DEFB of 2 bytes
+4187:319F	DEFB of 2 bytes
+4189:311F	DEFB of 2 bytes
+418B:0FB1	DEFB of 2 bytes
+418D:0FB1	DEFB of 2 bytes
+418F:05F1	DEFB of 2 bytes
+4191:0531	DEFB of 2 bytes
+4193:1131	DEFB of 2 bytes
+4195:14F1	DEFB of 2 bytes
+4197:31B1	DEFB of 2 bytes
+4199:3131	DEFB of 2 bytes
+419B:0F18	DEFB of 2 bytes
+419D:0F9B	DEFB of 2 bytes
+419F:00		DEFB of 1 bytes
+41A0:		label ptn2
+41A0:05DD	DEFB of 2 bytes
+41A2:051B	DEFB of 2 bytes
+41A4:111D	DEFB of 2 bytes
+41A6:14E0	DEFB of 2 bytes
+41A8:31A0	DEFB of 2 bytes
+41AA:3120	DEFB of 2 bytes
+41AC:0FF1	DEFB of 2 bytes
+41AE:0FF1	DEFB of 2 bytes
+41B0:05F1	DEFB of 2 bytes
+41B2:0531	DEFB of 2 bytes
+41B4:1131	DEFB of 2 bytes
+41B6:14F1	DEFB of 2 bytes
+41B8:31B1	DEFB of 2 bytes
+41BA:3131	DEFB of 2 bytes
+41BC:0FF1	DEFB of 2 bytes
+41BE:0F31	DEFB of 2 bytes
+41C0:00		DEFB of 1 bytes
+41C1:		label ptn3
+41C1:05DD	DEFB of 2 bytes
+41C3:051B	DEFB of 2 bytes
+41C5:111D	DEFB of 2 bytes
+41C7:14DD	DEFB of 2 bytes
+41C9:319D	DEFB of 2 bytes
+41CB:311D	DEFB of 2 bytes
+41CD:0FF1	DEFB of 2 bytes
+41CF:0FF1	DEFB of 2 bytes
+41D1:05F1	DEFB of 2 bytes
+41D3:0531	DEFB of 2 bytes
+41D5:1131	DEFB of 2 bytes
+41D7:14F1	DEFB of 2 bytes
+41D9:31B1	DEFB of 2 bytes
+41DB:3131	DEFB of 2 bytes
+41DD:0FF1	DEFB of 2 bytes
+41DF:0F31	DEFB of 2 bytes
+41E1:00		DEFB of 1 bytes
+41E2:		label ptn4
+41E2:0AE2	DEFB of 2 bytes
+41E4:0A20	DEFB of 2 bytes
+41E6:1622	DEFB of 2 bytes
+41E8:19E5	DEFB of 2 bytes
+41EA:31A5	DEFB of 2 bytes
+41EC:3125	DEFB of 2 bytes
+41EE:14B1	DEFB of 2 bytes
+41F0:14B1	DEFB of 2 bytes
+41F2:0AF1	DEFB of 2 bytes
+41F4:0A31	DEFB of 2 bytes
+41F6:1631	DEFB of 2 bytes
+41F8:19E4	DEFB of 2 bytes
+41FA:31A7	DEFB of 2 bytes
+41FC:3125	DEFB of 2 bytes
+41FE:1424	DEFB of 2 bytes
+4200:14A2	DEFB of 2 bytes
+4202:00		DEFB of 1 bytes
+4203:		label ptn5
+4203:05E4	DEFB of 2 bytes
+4205:0522	DEFB of 2 bytes
+4207:1124	DEFB of 2 bytes
+4209:14DD	DEFB of 2 bytes
+420B:319D	DEFB of 2 bytes
+420D:311D	DEFB of 2 bytes
+420F:0FF1	DEFB of 2 bytes
+4211:0FF1	DEFB of 2 bytes
+4213:05F1	DEFB of 2 bytes
+4215:0531	DEFB of 2 bytes
+4217:1131	DEFB of 2 bytes
+4219:14F1	DEFB of 2 bytes
+421B:31B1	DEFB of 2 bytes
+421D:3131	DEFB of 2 bytes
+421F:0FF1	DEFB of 2 bytes
+4221:0F31	DEFB of 2 bytes
+4223:00		DEFB of 1 bytes
+4224:		label ptn6
+4224:8CE4	DEFB of 2 bytes
+4226:0C24	DEFB of 2 bytes
+4228:8C24	DEFB of 2 bytes
+422A:B131	DEFB of 2 bytes
+422C:B131	DEFB of 2 bytes
+422E:B1B1	DEFB of 2 bytes
+4230:0AE2	DEFB of 2 bytes
+4232:0A31	DEFB of 2 bytes
+4234:08E0	DEFB of 2 bytes
+4236:0831	DEFB of 2 bytes
+4238:07DF	DEFB of 2 bytes
+423A:0731	DEFB of 2 bytes
+423C:00		DEFB of 1 bytes
+423D:		label ptn7
+423D:05F1	DEFB of 2 bytes
+423F:0531	DEFB of 2 bytes
+4241:1131	DEFB of 2 bytes
+4243:14F1	DEFB of 2 bytes
+4245:31B1	DEFB of 2 bytes
+4247:3131	DEFB of 2 bytes
+4249:0FB1	DEFB of 2 bytes
+424B:0FB1	DEFB of 2 bytes
+424D:05F1	DEFB of 2 bytes
+424F:0531	DEFB of 2 bytes
+4251:1131	DEFB of 2 bytes
+4253:14F1	DEFB of 2 bytes
+4255:31B1	DEFB of 2 bytes
+4257:3131	DEFB of 2 bytes
+4259:0F31	DEFB of 2 bytes
+425B:0FB1	DEFB of 2 bytes
+425D:00		DEFB of 1 bytes
+425E:		label ptn8
+425E:07F1	DEFB of 2 bytes
+4260:0731	DEFB of 2 bytes
+4262:1331	DEFB of 2 bytes
+4264:16F1	DEFB of 2 bytes
+4266:31B1	DEFB of 2 bytes
+4268:3131	DEFB of 2 bytes
+426A:11B1	DEFB of 2 bytes
+426C:11B1	DEFB of 2 bytes
+426E:07F1	DEFB of 2 bytes
+4270:0731	DEFB of 2 bytes
+4272:1331	DEFB of 2 bytes
+4274:16F1	DEFB of 2 bytes
+4276:31B1	DEFB of 2 bytes
+4278:3131	DEFB of 2 bytes
+427A:1131	DEFB of 2 bytes
+427C:11B1	DEFB of 2 bytes
+427E:00		DEFB of 1 bytes
+427F:		label ptn9
+427F:07E6	DEFB of 2 bytes
+4281:0724	DEFB of 2 bytes
+4283:1326	DEFB of 2 bytes
+4285:16E9	DEFB of 2 bytes
+4287:31A9	DEFB of 2 bytes
+4289:3129	DEFB of 2 bytes
+428B:11A9	DEFB of 2 bytes
+428D:11A9	DEFB of 2 bytes
+428F:07F1	DEFB of 2 bytes
+4291:0731	DEFB of 2 bytes
+4293:1331	DEFB of 2 bytes
+4295:16E6	DEFB of 2 bytes
+4297:31A9	DEFB of 2 bytes
+4299:3126	DEFB of 2 bytes
+429B:1129	DEFB of 2 bytes
+429D:11A6	DEFB of 2 bytes
+429F:00		DEFB of 1 bytes
+42A0:		label ptn10
+42A0:07EB	DEFB of 2 bytes
+42A2:072B	DEFB of 2 bytes
+42A4:132B	DEFB of 2 bytes
+42A6:16EB	DEFB of 2 bytes
+42A8:31B1	DEFB of 2 bytes
+42AA:3131	DEFB of 2 bytes
+42AC:11F1	DEFB of 2 bytes
+42AE:11F1	DEFB of 2 bytes
+42B0:07F1	DEFB of 2 bytes
+42B2:0731	DEFB of 2 bytes
+42B4:1326	DEFB of 2 bytes
+42B6:16F1	DEFB of 2 bytes
+42B8:31A4	DEFB of 2 bytes
+42BA:3131	DEFB of 2 bytes
+42BC:11DF	DEFB of 2 bytes
+42BE:1131	DEFB of 2 bytes
+42C0:00		DEFB of 1 bytes
+42C1:		label ptn11
+42C1:07E6	DEFB of 2 bytes
+42C3:0727	DEFB of 2 bytes
+42C5:1326	DEFB of 2 bytes
+42C7:16DF	DEFB of 2 bytes
+42C9:319F	DEFB of 2 bytes
+42CB:311F	DEFB of 2 bytes
+42CD:119F	DEFB of 2 bytes
+42CF:119F	DEFB of 2 bytes
+42D1:07F1	DEFB of 2 bytes
+42D3:0731	DEFB of 2 bytes
+42D5:1331	DEFB of 2 bytes
+42D7:16F1	DEFB of 2 bytes
+42D9:31A6	DEFB of 2 bytes
+42DB:3131	DEFB of 2 bytes
+42DD:1126	DEFB of 2 bytes
+42DF:11A7	DEFB of 2 bytes
+42E1:00		DEFB of 1 bytes
+42E2:		label ptn12
+42E2:1AE6	DEFB of 2 bytes
+42E4:1A26	DEFB of 2 bytes
+42E6:1824	DEFB of 2 bytes
+42E8:1824	DEFB of 2 bytes
+42EA:1622	DEFB of 2 bytes
+42EC:1622	DEFB of 2 bytes
+42EE:1521	DEFB of 2 bytes
+42F0:1521	DEFB of 2 bytes
+42F2:0E26	DEFB of 2 bytes
+42F4:0E26	DEFB of 2 bytes
+42F6:0C24	DEFB of 2 bytes
+42F8:0C24	DEFB of 2 bytes
+42FA:0A22	DEFB of 2 bytes
+42FC:0A22	DEFB of 2 bytes
+42FE:0921	DEFB of 2 bytes
+4300:0921	DEFB of 2 bytes
+4302:00		DEFB of 1 bytes
+4303:		label ptn13
+4303:07F1	DEFB of 2 bytes
+4305:0731	DEFB of 2 bytes
+4307:1331	DEFB of 2 bytes
+4309:16F1	DEFB of 2 bytes
+430B:31B1	DEFB of 2 bytes
+430D:3131	DEFB of 2 bytes
+430F:11F1	DEFB of 2 bytes
+4311:11F1	DEFB of 2 bytes
+4313:07F1	DEFB of 2 bytes
+4315:0731	DEFB of 2 bytes
+4317:1331	DEFB of 2 bytes
+4319:16F1	DEFB of 2 bytes
+431B:31B1	DEFB of 2 bytes
+431D:3131	DEFB of 2 bytes
+431F:11F1	DEFB of 2 bytes
+4321:1131	DEFB of 2 bytes
+4323:00		DEFB of 1 bytes
+4324:		label ptn14
+4324:1A26	DEFB of 2 bytes
+4326:1824	DEFB of 2 bytes
+4328:1622	DEFB of 2 bytes
+432A:1521	DEFB of 2 bytes
+432C:0E26	DEFB of 2 bytes
+432E:0C24	DEFB of 2 bytes
+4330:0A22	DEFB of 2 bytes
+4332:0921	DEFB of 2 bytes
+4334:00		DEFB of 1 bytes
+		End of INCLUDE
+4335:		label musicend
+		ORG 437E
+437E:		label notetab
+437E:00010F01	DEFW of 12 words
+4382:1F013001
+4386:43015601
+438A:6A018001
+438E:9601AF01
+4392:C801E301
+4396:		label line10
+4396:000A	DEFB of 2 bytes
+4398:0D00	DEFW of 1 words
+439A:F5		DEFB of 1 bytes
+439B:D4		DEFB of 1 bytes
+439C:1D		DEFB of 1 bytes
+439D:22		DEFB of 1 bytes
+439E:21		DEFB of 1 bytes
+439F:1D		DEFB of 1 bytes
+43A0:20		DEFB of 1 bytes
+43A1:7E		DEFB of 1 bytes
+43A2:8F		DEFB of 1 bytes
+43A3:01		DEFB of 1 bytes
+43A4:04		DEFB of 1 bytes
+43A5:00		DEFB of 1 bytes
+43A6:00		DEFB of 1 bytes
+43A7:		label dfile
+43A7:76		DEFB of 1 bytes
+43A8:76767676	DEFB of 8 bytes
+43AC:76767676
+43B0:76767676	DEFB of 8 bytes
+43B4:76767676
+43B8:76767676	DEFB of 8 bytes
+43BC:76767676
+43C0:		label var
+43C0:80		DEFB of 1 bytes
+43C1:		label last
+		IF (false)
+- .warning music data too large
+		ENDIF
+Emiting raw binary from 4009 to 43C0
