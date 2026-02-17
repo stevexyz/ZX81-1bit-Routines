@@ -7,8 +7,25 @@
 ;************************************************************************************
 
   org $4000
-  jp reinit
-  
+
+; main routine
+init
+reinit
+    ld hl,musicdata     ;3      ;init pointer to song data
+    push hl             ;1
+selectptn                       ;select pattern
+    pop hl              ;1
+    ld e,(hl)           ;1      ;load lo byte of sequence pointer
+    inc hl              ;1
+    ld d,(hl)           ;1      ;load hi byte of sequence pointer - ptn pointer now in de
+    inc hl              ;1
+    ld a,d              ;1      ;check for end marker
+    or e                ;1
+    jr z,reinit         ;1      ;loop if end marker found
+    push hl             ;1      ;save sequence pointer
+    push de             ;1      ;save ptn pointer
+    jr rdnotes          ;2 = 16b
+
 playnote                    
 switch1 equ $+1                     ;output switch ch1
     out (c),a           ;12     ;in (c),a = ED 78, out (c),a = ED 79
@@ -58,23 +75,6 @@ skip2
 oldSP equ $+1
     ld sp,0 
     jr rdnotes
-    
-; main routine
-reinit
-    ld hl,musicdata     ;3      ;init pointer to song data
-    push hl             ;1
-selectptn                       ;select pattern
-    pop hl              ;1
-    ld e,(hl)           ;1      ;load lo byte of sequence pointer
-    inc hl              ;1
-    ld d,(hl)           ;1      ;load hi byte of sequence pointer - ptn pointer now in de
-    inc hl              ;1
-    ld a,d              ;1      ;check for end marker
-    or e                ;1
-    jr z,reinit         ;1      ;loop if end marker found
-    push hl             ;1      ;save sequence pointer
-    push de             ;1      ;save ptn pointer
-    jr rdnotes          ;2 = 16b
 
 rdnotes
     pop de              ;retrieve ptn pointer
@@ -183,61 +183,15 @@ musicdata
     include "music.asm"
 musicend
 
-    org $437E
-
-; note frequencies parameters
+    org $4392
+; note frequencies parameters (should be kept all in $43xx)
 notetab
-    dw $100 ; oct1
-    dw $111
-    dw $120
-    dw $133
-    dw $140
-    dw $155
-    dw $166
-    dw $180
-    dw $199
-    dw $1AA
-    dw $1C7
-    dw $1E0
-    dw $200 ; oct 2
-    dw $222
-    dw $240
-    dw $266
-    dw $280
-    dw $2AA
-    dw $2CC
-    dw $300
-    dw $333
-    dw $355
-    dw $38E
-    dw $3C0
-    dw $400 ; oct 3
-    dw $444
-    dw $480
-    dw $4CC
-    dw $500
-    dw $555
-    dw $599
-    dw $600
-    dw $666
-    dw $6AA
-    dw $71C
-    dw $780
-    dw $800 ; oct 4
-    dw $888
-    dw $900
-    dw $999
-    dw $A00
-    dw $AAA
-    dw $B33
-    dw $C00
-    dw $CCC
-    dw $D55
-    dw $E38
-    dw $F00
-	dw 0    ; silence
-
+    dw $100,$111,$120,$133,$140,$155,$166,$180,$199,$1AA,$1C7,$1E0 ; octave 1
+    dw $200,$222,$240,$266,$280,$2AA,$2CC,$300,$333,$355,$38E,$3C0 ; octave 2
+    dw $400,$444,$480,$4CC,$500,$555,$599,$600,$666,$6AA,$71C,$780 ; octave 3
+    dw $800,$888,$900,$999,$A00,$AAA,$B33,$C00,$CCC,$D55,$E38,$F00 ; octave 4
+    dw 0 ; silence
 	; sml closure
-    org $43F4
+    ;org $43F4
     ret
     nop
