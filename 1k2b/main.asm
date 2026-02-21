@@ -1,15 +1,19 @@
 ;************************************************************************************
+;
 ; 1k2b - 2ch 1-bit music routine for unexpanded ZX81 (best used with "loud" tape mod)
-; by utz 03'2015 * www.irrlichtproject.de
-;-
+;   by utz 03'2015 * www.irrlichtproject.de
+;
 ; Super Maxi Load adaptation and new music
-; by stevexyz 02'2026 
+;   by stevexyz 02'2026 * https://github.com/stevexyz/ZX81-1bit-Routines
+;
 ;************************************************************************************
 
   org $4000
 
 ; main routine
 init
+    di ; needed? (NMI is already off via hw mask, are standard interrupt a problem?)
+
 reinit
     ld hl,musicdata     ;3      ;init pointer to song data
     push hl             ;1
@@ -86,7 +90,7 @@ rdnotes
     rla                 ;A=A*2, carry is reset from previous or op
     exx
     ld de,speed         ;prep speed counter
-    jr nc,rdskip1           ;check if half speed should be used
+    jr nc,rdskip1       ;check if half speed should be used
     sla d               ;adjust speed counter if necessary
 rdskip1 
     exx
@@ -192,6 +196,7 @@ notetab
     dw $800,$888,$900,$999,$A00,$AAA,$B33,$C00,$CCC,$D55,$E38,$F00 ; octave 4
     dw 0 ; silence
 	; sml closure
+
     ;org $43F4
     ret
     nop
