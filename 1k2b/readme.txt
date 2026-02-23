@@ -25,6 +25,8 @@ In order to use the 1k2b compiler package, you need the
 following:
 - pasmo or a compatible assembler of your choice
   (http://pasmo.speccy.org)
+- the Super Maxi Loader binaries for smlfilegen and/or smloadgen
+  (https://github.com/stevexyz/ZX81-1K-Super-Maxi-Loader)
 - a ZX81 or an emulator that correctly emulates the ZX81's
   behaviour regarding ports (EightyOne for Windows, or the
   latest sz81 [v2.1.9] for *nix)
